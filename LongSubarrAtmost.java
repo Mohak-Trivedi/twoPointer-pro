@@ -95,7 +95,12 @@ public static int atMostSum(int[] arr, int n, int k) {
                 sum -= arr[e];
                 s++; // sub-array with next s start as the previous s start has been explored
                 sum -= arr[s];
-                // no need to check if current length is longest, as it won't be as it is shorter than [s...e-1] 
+                // no need to check if current length is longest, as it won't be as it is shorter than [s...e-1]
+                
+                // edge case: when prev subarray size 2 and sum > k, then s++ e-- lead to this
+                if(s > e) {
+                    e = s;
+                }
             } else {
                 int len = e - s + 1;
                 maxLen = Math.max(len, maxLen);
