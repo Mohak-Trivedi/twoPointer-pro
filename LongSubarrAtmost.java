@@ -6,25 +6,26 @@
 // No need to look for subarrays starting from next i if j reach n for current i, as the next subarrays would be shorter only.
 // public static int atMostSum(int[] arr, int n, int k) {
 //     int maxLen = 0;
-//     int j;
-//     for(int i = 0;i < n;i++) {
-//         int sum = arr[i]; // sum of subarray starting from index i
-//         for(j = i;j < n;) {
-//             if(sum <= k) {
-//                 j++;
-//                 if(j < n) {
-//                     sum += arr[j];
-//                 }
+
+//     for (int s = 0; s < n; s++) {
+//         int sum = 0;
+//         int len = 0;
+
+//         int e = s;
+//         while (e < n) {
+//             sum += arr[e];
+//             if (sum <= k) {
+//                 len++;
+//                 e++;
 //             } else {
-//                 int len = j - i;
-//                 maxLen = Math.max(maxLen, len);
 //                 break;
 //             }
 //         }
-//         if(j > n-1) {
-//             int len = j - i;
+
+//         if (e == n) {
+//             return len;
+//         } else {
 //             maxLen = Math.max(maxLen, len);
-//             return maxLen;
 //         }
 //     }
 
