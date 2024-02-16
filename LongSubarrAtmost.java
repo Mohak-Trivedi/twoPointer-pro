@@ -27,7 +27,7 @@
 //             return maxLen;
 //         }
 //     }
-    
+
 //     return maxLen;
 // }
 
@@ -36,32 +36,33 @@
 // i.e. totally from start, directly start exploring from previous e.
 // Logic:
 // [prev s...e] had sum > k, but [prev s...e-1] had sum <= k
-// so [new s...prev e-1] will have sum <= k. But, it will ofc be shorter than [prev s ... e],
-// so just start with [next s ... e]
+// so [new s...prev e-1] will ofc have sum <= k. 
+// so just start with [next s ... e] excluding arr[e] from sum as it causes >k (and ofc excluding arr[s] as it wont be part of new subarray), so sum = sum - arr[s] - arr[e]
+// also len-- before as the prev s will not be part of subarray.
 public static int atMostSum(int[] arr, int n, int k) {
     int maxLen = 0;
-    int j = 0;
-    int sum = arr[0];
-    for(int i = 0;i < n;i++) {
-        for(;j < n;) {
-            if(sum <= k) {
-                j++;
-                if(j < n) {
-                    sum += arr[j];
-                }
+    int e = 0;
+    int sum = 0;
+    int len = 0;
+    for (int s = 0; s < n; s++) {
+        while (e < n) {
+            sum += arr[e];
+            if (sum <= k) {
+                len++;
+                e++;
             } else {
-                int len = j - i;
-                maxLen = Math.max(maxLen, len);
-                sum -= arr[i];
                 break;
             }
         }
-        if(j > n-1) {
-            int len = j - i;
+
+        if (e == n) {
+            return len;
+        } else {
             maxLen = Math.max(maxLen, len);
-            return maxLen;
+            sum = sum - arr[s] - arr[e];
+            len--;
         }
     }
-    
+
     return maxLen;
 }
