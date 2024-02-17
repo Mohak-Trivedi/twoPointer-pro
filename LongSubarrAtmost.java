@@ -57,7 +57,8 @@ public static int atMostSum(int[] arr, int n, int k) {
         }
 
         if (e == n) {
-            return len;
+            maxLen = Math.max(maxLen, len);
+            return maxLen;
         } else {
             maxLen = Math.max(maxLen, len);
             sum = sum - arr[s] - arr[e];

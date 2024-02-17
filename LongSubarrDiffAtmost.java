@@ -27,12 +27,12 @@
  * Number of skyscrapers in the field of view angle = Length of subarray whose
  * abs(max element - min element) <= field of vision angle
  * 
- * Max. Number of skyscrapers in the field of view angle = Length of subarray
+ * Max. Number of skyscrapers in the field of view angle = Length of longest subarray
  * whose abs(max element - min element) <= field of vision angle
  * 
  * Hence, the question is actually:
  * Given a sorted array of integers and an integer k, find the longest subarray
- * having whose absolute difference of its last and first elements <= k
+ * having absolute difference of its last and first elements <= k
  */
 
 // Brute force approach: TC: O(N^2), SC: O(1)
@@ -44,91 +44,40 @@
 // Better approach: TC: O(N^2), SC: O(1)
 // Find the abs(max - min) only for those subarrays whose abs(max - min) <= fov
 
-// Optimized approach:
+// Optimized approach: TC: O(N), SC: O(N)
+// Same as Longest Subarray with Sum at most K, but calculate difference of arr[e] and arr[s] for current subarray instead of updating sum with arr[e]
+// [prev s...e] had diff > k, but [prev s...e-1] had diff <= k
+// so [new s...prev e-1] will ofc have diff <= k. 
+// so just start with [next s ... e] excluding arr[e] from diff as it causes >k (and ofc excluding arr[s] as it wont be part of new subarray), so diff = arr[e - 1] - arr[s + 1];
+// also len-- before as the prev s will not be part of subarray.
+public static int atMostDiff(int[] arr, int n, int fov) {
+    int maxLen = 0;
+    int e = 0;
+    int diff = 0;
+    int len = 0;
 
-// Logic:
-// We notice a monotonic function:
-// abs(max-min) for arr[0...0] <= abs(max-min) for arr[0...1] <= abs(max-min)
-// for arr[0...2] <= ... <= abs(max-min) for arr[0...n-2] <= abs(max-min)
-// for arr[0...n-1]
-// Same applies for sub-arrays starting from 1, 2, 3, ..., n-1.
-// So, we are sure how to use the 2 pointers : s and e.
-// For subarray of length 1 i.e. when s==e:
-// curr subarray abs(max-min) > fov -> No more length to be explored for subarray
-// starting with s -> s++ e++
-// curr subarray abs(max-min) <= fov -> Check if we can increase length of current
-// subarray starting with s -> e++
-// For subarray of length > 1 i.e. s!=e:
-// curr subarray abs(max-min) > fov -> previous subarray [s ... e-1] was valid
-// (without that wouldn't have reached this point), so [s+1 ... e-1] will be valid as 
-// well -> s++ e--. But, CAUTION: it might happen s>e after s++ e--, so if(s>e) -> e=s
-// curr subarray abs(max-min) <= fov -> Check if we can increase length of current -> e++
-/*package whatever //do not write package name here */
-
-import java.io.*;
-import java.util.Scanner;
-
-class GFG {
-
-    public static void main(String[] args) {
-        int[] arr = { 5, 9, 20, 22, 28, 35, 60, 350, 358, 359, 360 };
-        int n = arr.length;
-        int k = 30;
-
-        // Print the length of the longest
-        // subarray with sum at most k.
-        System.out.println(atMostDiff(arr, n, k));
-    }
-
-    public static int atMostSum(int[] b, int n, int fov) {
-
-        int s = 0, e = 0;
-        int diff = 0;
-        int maxLen = 0;
-        while (s < n && e < n) { // s>=n -> explored all subarrays, e>=n -> found longest subarray already, no
-            // point in trying further s
-            if (s == e) {
-                // diff = b[e] - b[s];
-                if (diff > fov) {
-                    s++;
-                    e++;
-
-                    // abs(max - min) for next subarray starting with next s
-                    if (s < n) {
-                        diff = b[e] - b[s];
-                    }
-                } else {
-                    int len = 1;
-                    maxLen = Math.max(len, maxLen);
-
-                    e++;
-                    if (e < n) {
-                        diff = b[e] - b[s];
-                    }
-                }
+    for (int s = 0; s < n; s++) {
+        while (e < n) {
+            diff = arr[e] - arr[s];
+            if (diff <= fov) {
+                len++;
+                e++;
             } else {
-                // diff = b[e] - b[s];
-                if (diff > fov) {
-                    s++;
-                    e--;
+                break;
+            }
+        }
 
-                    // edge case: when prev subarray size 2 and diff > fov, then s++ e-- lead to
-                    // this
-                    if (s > e) {
-                        e = s;
-                    }
-
-                    diff = b[e] - b[s];
-                } else {
-                    int len = e - s + 1;
-                    maxLen = Math.max(maxLen, len);
-
-                    e++;
-                    if (e < n) {
-                        diff = b[e] - b[s];
-                    }
-                }
+        if (e == n) {
+            maxLen = Math.max(maxLen, len);
+            return maxLen;
+        } else {
+            maxLen = Math.max(maxLen, len);
+            if ((s + 1) < n) {
+                diff = arr[e - 1] - arr[s + 1];
+                len--;
             }
         }
     }
+
+    return maxLen;
 }
