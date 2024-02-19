@@ -56,14 +56,11 @@ public static int atMostSum(int[] arr, int n, int k) {
             }
         }
 
-        if (e == n) {
-            maxLen = Math.max(maxLen, len);
-            return maxLen;
-        } else {
-            maxLen = Math.max(maxLen, len);
+        maxLen = Math.max(maxLen, len);
+        if (e < n) {
             sum = sum - arr[s] - arr[e];
-            len--;
         }
+        len--;
     }
 
     return maxLen;

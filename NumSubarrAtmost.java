@@ -92,20 +92,37 @@
 //     }
 // }
 
-// My approach:
-import java.io.*;
+// My approach: TC: O(N), SC: O(1)
+// Same as "Longest subarray having sum atmost k", but instead of maintaining maximum length, maintain count. 
+// And instead of atmost <=k use less than <k
+// Once you stop at LONGEST subarray having sum less than k for a subarray starting from s index, you know, 
+// the TOTAL_COUNT of subarrays having  sum less than k starting from s index is equal to the length 
+// of this longest one starting from s. In this way, add count from subarrays starting from each index s.
+static int countSubarray(int arr[],
+        int n, int k) {
+    // int maxLen = 0;
+    int count = 0; // count instead of maxLen
+    int e = 0;
+    int sum = 0;
+    int len = 0;
+    for (int s = 0; s < n; s++) {
+        while (e < n) {
+            sum += arr[e];
+            if (sum < k) {
+                len++;
+                e++;
+            } else {
+                break;
+            }
+        }
 
-public class GFG {
-    // Function to find the length of the largest subarray
-    // having a sum at most k.
-
-    public static void main(String[] args) {
-        int[] arr = { 1, 2, 1, 0, 1, 1, 0 };
-        int n = arr.length;
-        int k = 4;
-
-        // Print the length of the longest
-        // subarray with sum at most k.
-        System.out.println(atMostSum(arr, n, k));
+        // maxLen = Math.max(maxLen, len);
+        count += len;
+        if (e < n) {
+            sum = sum - arr[s] - arr[e];
+            len--;
+        }
     }
+
+    return count;
 }
